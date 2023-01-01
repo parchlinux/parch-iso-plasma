@@ -4,6 +4,7 @@ arch-install-scripts
 archinstall
 b43-fwcutter
 base
+base-devel
 bind
 brltty
 broadcom-wl
@@ -28,7 +29,7 @@ ethtool
 exfatprogs
 f2fs-tools
 fatresize
-firefox
+falkon
 fsarchiver
 git
 gnu-netcat
@@ -52,6 +53,7 @@ lftp
 libfido2
 libusb-compat
 linux
+linux-headers
 linux-atm
 linux-firmware
 linux-firmware-marvell
@@ -138,6 +140,8 @@ sddm
 xorg
 bash-completion
 networkmanager
+plasma-nm
+plasma-pa
 
 #systemutils
 btop
@@ -148,9 +152,11 @@ xdg-user-dirs
 spectacle
 packagekit-qt5
 neofetch
-flameshot
 vlc
 elisa
+gwenview
+keepassxc
+
 
 #parchlinuxstuff
 calamares
@@ -158,3 +164,4 @@ parchlinux-cala-config
 os-prober
 paru
 parch-branding
+parch-plasma-menu
