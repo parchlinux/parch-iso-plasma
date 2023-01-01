@@ -1,1 +1,1 @@
-# Parch-os iso template
+# ParchLinux plasma release
