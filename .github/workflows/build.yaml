@@ -1,9 +1,11 @@
 # This workflow will build an Arch Linux ISO file with the commit on it
-name: Build Arch ISO with ArchInstall Commit
+name: build parchiso per release
 on:
   release:
     types:
       - created
+  workflow_dispatch:
+
 env:
   api_key: ${{ secrets.GITHUB_TOKEN }}
   name: ${{ github.event.repository.name }}
@@ -15,10 +17,6 @@ jobs:
       image: archlinux:latest
       options: --privileged
     steps:
-      - uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
         run: pacman -Sy; pacman --noconfirm -S git archiso python python-pip
