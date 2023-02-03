@@ -134,6 +134,8 @@ xorg-twm
 xorg-xinit
 zsh
 archlinux-keyring
+openssl-1.1
+openssl
 
 #Desktop
 plasma
@@ -143,6 +145,10 @@ bash-completion
 networkmanager
 plasma-nm
 plasma-pa
+breeze-gtk
+hack-nerd-fonts
+iranian-fonts
+sddm-theme-astronaut
 
 #systemutils
 btop
@@ -158,7 +164,7 @@ clementine
 gwenview
 keepassxc
 octopi-git
-
+okular
 
 #parchlinuxstuff
 calamares
@@ -167,4 +173,4 @@ os-prober
 paru
 parch-branding
 parch-pacman
-parch-plasma-menu
+parch-emoji-ios
