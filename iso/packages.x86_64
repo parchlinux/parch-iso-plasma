@@ -163,7 +163,6 @@ vlc
 clementine
 gwenview
 keepassxc
-octopi-git
 okular
 
 #parchlinuxstuff
@@ -174,3 +173,5 @@ paru
 parch-branding
 parch-pacman
 parch-emoji-ios
+parch-os-wallpapers
+warpinator
