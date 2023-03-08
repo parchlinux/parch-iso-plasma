@@ -22,7 +22,7 @@ def _compute_sha256(file_name):
 
 
 _path = list(Path().cwd().glob("out/*.iso"))[0]
-path = _path.posix_path()
+path = _path.as_posix()
 
 file_name = _path.name
 
@@ -43,7 +43,7 @@ if not (repo_name and api_key and release_name):
 
 gh = Github(api_key)
 print(repo_name, api_key)
-repo = gh.get_repo(f"parchlinux/parch-iso-cinnamon")
+repo = gh.get_repo(f"parchlinux/{repo_name}")
 
 release = repo.get_release(release_name)
 

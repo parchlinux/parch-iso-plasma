@@ -24,4 +24,5 @@ jobs:
       - name: Build image
         run: mkarchiso -v iso/
       - name: Upload iso to the release
-        run: python tools/upload_assest.py
+        run: python tools/upload_asset.py
+
