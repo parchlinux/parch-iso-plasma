@@ -22,7 +22,7 @@ def _compute_sha256(file_name):
 
 
 _path = list(Path().cwd().glob("out/*.iso"))[0]
-path = _path.posix_path()
+path = _path.as_posix()
 
 file_name = _path.name
 
