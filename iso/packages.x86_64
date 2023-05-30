@@ -166,6 +166,9 @@ okular
 parch-firefox-config
 ttf-ms-fonts
 motrix-bin
+android-file-transfer
+gvfs-mtp
+broadcom-wl-dkms
 
 #parchlinuxstuff
 calamares
