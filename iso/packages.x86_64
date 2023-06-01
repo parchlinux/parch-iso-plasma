@@ -7,7 +7,7 @@ base
 base-devel
 bind
 brltty
-broadcom-wl
+#broadcom-wl
 btrfs-progs
 clonezilla
 cloud-init
