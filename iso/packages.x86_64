@@ -147,7 +147,9 @@ plasma-pa
 breeze-gtk
 hack-nerd-fonts
 iranian-fonts
-sddm-theme-astronaut
+parch-grub
+python-pyqt6
+parch-welcome
 
 #systemutils
 btop
@@ -159,13 +161,10 @@ spectacle
 packagekit-qt5
 neofetch-git
 vlc
-clementine
+elisa
 gwenview
-keepassxc
 okular
-parch-firefox-config
-ttf-ms-fonts
-motrix-bin
+ttf-dejavu
 android-file-transfer
 gvfs-mtp
 broadcom-wl-dkms
@@ -180,4 +179,3 @@ parch-branding
 parch-pacman
 parch-emoji-ios
 parch-os-wallpapers
-warpinator
