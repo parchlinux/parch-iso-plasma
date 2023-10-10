@@ -1,6 +1,11 @@
 alsa-utils
 amd-ucode
 arch-install-scripts
+pipewire
+pipewire-pulse
+kpipewire
+wireplumber
+gst-plugin-pipewire
 archinstall
 b43-fwcutter
 base
@@ -169,13 +174,15 @@ android-file-transfer
 gvfs-mtp
 broadcom-wl-dkms
 gparted
+spectacle
+
 
 #parchlinuxstuff
 calamares
-parchlinux-cala-config
+parch-calamares
 os-prober
 paru
 parch-branding
 parch-pacman
 parch-emoji-ios
-parch-os-wallpapers
+parch-wallpapers
