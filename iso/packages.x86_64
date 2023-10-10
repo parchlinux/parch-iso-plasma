@@ -130,6 +130,7 @@ which
 wireless-regdb
 wireless_tools
 wpa_supplicant
+wget
 wvdial
 xfsprogs
 xl2tpd
@@ -153,7 +154,6 @@ breeze-gtk
 hack-nerd-fonts
 iranian-fonts
 parch-grub
-python-pyqt6
 parch-welcome
 
 #systemutils
