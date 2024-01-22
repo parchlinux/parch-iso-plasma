@@ -199,7 +199,7 @@ xdg-desktop-portal-kde
 #systemutils
 btop
 konsole
-kate
+#kate
 dolphin
 xdg-user-dirs
 spectacle
