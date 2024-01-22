@@ -1,10 +1,16 @@
-# This workflow will build an Arch Linux ISO file when a release is created.
+
+# This workflow will build an Arch Linux ISO file with the commit on it
 name: build parchiso per release
 on:
   release:
     types:
       - created
 
+env:
+  api_key: ${{ secrets.GITHUB_TOKEN }}
+  name: ${{ github.event.repository.name }}
+  release_name: ${{ github.ref_name }}
+  GH_TOKEN: ${{ github.token }}
 jobs:
   build:
     permissions:
@@ -16,18 +22,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
-        run: |
-          pacman -Suy --noconfirm --noprogressbar
-          pacman -Sy --noconfirm --noprogressbar --needed git archiso python python-pygithub reflector
-      - name: Change pacman mirrors
-        run: |
-          reflector -n 3 --protocol https --save /etc/pacman.d/mirrorlist
-          pacman -Syu
+        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip  
+      - name: Change Arch docker mirror
+        run: reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
       - name: Build image
         run: mkarchiso -v iso/
       - name: Upload iso to the release
-        env:
-          API_KEY: ${{ secrets.GITHUB_TOKEN }}
-          REPO_NAME: ${{ github.repository }}
-          RELEASE_NAME: ${{ github.ref_name }}
-        run: python tools/upload_asset.py
+        run: |
+          cd ./out
+          mkdir iso_parts
+          # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
+          #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          md5sum iso_parts/* > iso_parts/md5sums.txt
+          gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
