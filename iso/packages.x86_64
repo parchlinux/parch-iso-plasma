@@ -72,6 +72,7 @@ man-pages
 mc
 mdadm
 memtest86+
+parch-license-fix
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
