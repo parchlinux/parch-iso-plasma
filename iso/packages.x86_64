@@ -26,7 +26,6 @@ ethtool
 exfatprogs
 f2fs-tools
 fatresize
-firebuild
 foot-terminfo
 fd
 fsarchiver
@@ -109,13 +108,11 @@ linux-firmware
 linux-firmware-marvell
 grub
 os-prober
-grub-hooks
 eza
 ntp
 most
 wget
 dialog
-repoctl
 dnsutils
 logrotate
 pipewire
@@ -125,7 +122,6 @@ wireplumber
 #build
 mkinitcpio
 mkinitcpio-archiso
-mkinitcpio-firmware
 mkinitcpio-openswap
 mkinitcpio-nfs-utils
 cryptsetup
