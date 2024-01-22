@@ -1,4 +1,4 @@
-
+parch-license-fix
 archiso
 b43-fwcutter
 base
@@ -134,6 +134,7 @@ kpmcore
 yaml-cpp
 boost-libs
 gtk-update-icon-cache
+
 
 #Desktop
 sddm
