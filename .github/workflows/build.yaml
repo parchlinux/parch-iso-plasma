@@ -34,5 +34,5 @@ jobs:
           # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
           #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
           7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          md5sum iso_parts/* > iso_parts/md5sums.txt
+          sha256sum iso_parts/* > iso_parts/sha256sums.txt
           gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
