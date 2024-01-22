@@ -22,7 +22,7 @@ jobs:
       - name: Change pacman mirrors
         run: |
           reflector -n 3 --protocol https --save /etc/pacman.d/mirrorlist
-          pacman -Syy
+          pacman -Syu
       - name: Build image
         run: mkarchiso -v iso/
       - name: Upload iso to the release
