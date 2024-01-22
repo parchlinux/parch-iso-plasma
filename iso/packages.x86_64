@@ -200,7 +200,7 @@ powerdevil
 sddm-kcm
 systemsettings
 xdg-desktop-portal-kde
-
+print-manager
 
 #systemutils
 btop
@@ -233,6 +233,7 @@ calamares-parch
 os-prober
 paru
 parch-branding
+parch-printer
 parch-pacman
 parch-emoji-ios
 parch-wallpapers
