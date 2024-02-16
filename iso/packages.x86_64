@@ -1,12 +1,13 @@
-parch-license-fix
 alsa-utils
+amd-ucode
+arch-install-scripts
+bluez
+bluez-utils
 pipewire
 pipewire-pulse
-pipewire-alsa
-gstreamer-vaapi
+wireplumber
 gst-plugin-pipewire
-gst-plugins-good
-amd-ucode
+archinstall
 b43-fwcutter
 base
 base-devel
@@ -34,20 +35,23 @@ ethtool
 exfatprogs
 f2fs-tools
 fatresize
+firefox
 fsarchiver
 git
 gnu-netcat
 gpart
 gpm
 gptfdisk
-gvfs
 grml-zsh-config
 grub
 hdparm
 hyperv
 intel-ucode
+#ipw2100-fw
+#ipw2200-fw
 irssi
 iw
+iwd
 jfsutils
 kitty-terminfo
 less
@@ -68,6 +72,7 @@ man-pages
 mc
 mdadm
 memtest86+
+parch-license-fix
 mkinitcpio
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
@@ -82,6 +87,7 @@ nmap
 ntfs-3g
 nvme-cli
 open-iscsi
+open-vm-tools
 openconnect
 openssh
 openvpn
@@ -96,6 +102,7 @@ python
 python-psutil
 python-systemd
 refind
+#reflector
 reiserfsprogs
 rp-pppoe
 rsync
@@ -115,7 +122,6 @@ testdisk
 tmux
 tpm2-tss
 udftools
-udisks2
 usb_modeswitch
 usbmuxd
 usbutils
@@ -126,6 +132,7 @@ which
 wireless-regdb
 wireless_tools
 wpa_supplicant
+wget
 wvdial
 xfsprogs
 xl2tpd
@@ -137,35 +144,20 @@ archlinux-keyring
 openssl-1.1
 openssl
 
-#build
-mkinitcpio
-mkinitcpio-archiso
-mkinitcpio-openswap
-mkinitcpio-nfs-utils
-cryptsetup
-brightnessctl
-power-profiles-daemon
-xmlto
-boost
-ckbcomp
-kpmcore
-yaml-cpp
-boost-libs
-gtk-update-icon-cache
-
-
 #Desktop
 sddm
+xorg
 bash-completion
 networkmanager
 parch-grub
 parch-welcome
-bash-completion
 
 # Plasma Packages
 bluedevil
 breeze
 breeze-gtk
+breeze-plymouth
+discover
 drkonqi
 flatpak-kcm
 kactivitymanagerd
@@ -203,20 +195,24 @@ plasma-thunderbolt
 plasma-vault
 plasma-workspace
 plasma-workspace-wallpapers
+plymouth-kcm
 polkit-kde-agent
 powerdevil
 sddm-kcm
 systemsettings
 xdg-desktop-portal-kde
+print-manager
 
 #systemutils
 btop
 konsole
-#kate
+kate
 dolphin
 xdg-user-dirs
 spectacle
+packagekit-qt5
 neofetch-git
+vlc
 elisa
 gwenview
 okular
@@ -229,6 +225,7 @@ vulkan-radeon
 ark
 unzip
 unrar
+micro
 vazirmatn-fonts
 
 #parchlinuxstuff
@@ -237,6 +234,7 @@ calamares-parch
 os-prober
 paru
 parch-branding
+parch-printer
 parch-bluetooth
 parch-pacman
 parch-emoji-ios
