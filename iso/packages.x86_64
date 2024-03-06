@@ -203,11 +203,13 @@ systemsettings
 xdg-desktop-portal-kde
 print-manager
 
+
 #systemutils
 btop
 konsole
 kate
 dolphin
+discover
 xdg-user-dirs
 spectacle
 packagekit-qt5
@@ -230,7 +232,7 @@ vazirmatn-fonts
 
 #parchlinuxstuff
 calamares
-calamares-parch
+calamares-parch-beta
 os-prober
 paru
 parch-branding
