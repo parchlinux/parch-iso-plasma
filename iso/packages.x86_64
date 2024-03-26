@@ -144,6 +144,9 @@ archlinux-keyring
 openssl-1.1
 openssl
 
+#Tasky
+tasky
+
 #Desktop
 sddm
 xorg
