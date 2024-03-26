@@ -126,6 +126,7 @@ usb_modeswitch
 usbmuxd
 usbutils
 vim
+neovim
 virtualbox-guest-utils-nox
 vpnc
 which
