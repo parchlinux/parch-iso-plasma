@@ -201,3 +201,7 @@ parch-wallpapers
 parch-plymouth
 plymouth
 boost
+
+#jetbrains fonts
+ttf-jetbrains-mono-nerd
+ttf-jetbrains-mono
