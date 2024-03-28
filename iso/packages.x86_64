@@ -126,6 +126,7 @@ usb_modeswitch
 usbmuxd
 usbutils
 vim
+neovim
 virtualbox-guest-utils-nox
 vpnc
 which
@@ -143,6 +144,9 @@ zsh
 archlinux-keyring
 openssl-1.1
 openssl
+
+#Tasky
+tasky
 
 #Desktop
 sddm
@@ -197,3 +201,7 @@ parch-wallpapers
 parch-plymouth
 plymouth
 boost
+
+#jetbrains fonts
+ttf-jetbrains-mono-nerd
+ttf-jetbrains-mono
