@@ -126,7 +126,6 @@ usb_modeswitch
 usbmuxd
 usbutils
 vim
-neovim
 virtualbox-guest-utils-nox
 vpnc
 which
@@ -159,6 +158,10 @@ parch-welcome
 # Plasma Packages
 plasma
 
+# plasma apps
+plasmatube
+neochat
+tokodon
 
 #systemutils
 btop
@@ -184,7 +187,6 @@ vulkan-radeon
 ark
 unzip
 unrar
-micro
 vazirmatn-fonts
 
 #parchlinuxstuff
@@ -201,7 +203,3 @@ parch-wallpapers
 parch-plymouth
 plymouth
 boost
-
-#jetbrains fonts
-ttf-jetbrains-mono-nerd
-ttf-jetbrains-mono
