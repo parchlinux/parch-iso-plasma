@@ -175,6 +175,7 @@ konsole
 simple-reflector
 kate
 dolphin
+dolphin-plugins
 discover
 xdg-user-dirs
 packagekit-qt5
