@@ -23,7 +23,7 @@ main() {
     local reponame
     reponame=${PWD##*/}
     
-    echo -e "$Green### start install packeges for build $reponame ###$reset"
+    echo -e "$Green### start install packages for build $reponame ###$reset"
     echo -e "$Brown### checking your os ###$reset"
     if type pacman >/dev/null 2>&1;then
         if [ "$(id -u)" != "0" ]; then
