@@ -162,6 +162,12 @@ plasma
 plasmatube
 neochat
 tokodon
+elisa
+okular
+kalk
+vlc
+spectacle
+
 
 #systemutils
 btop
@@ -171,18 +177,12 @@ kate
 dolphin
 discover
 xdg-user-dirs
-spectacle
 packagekit-qt5
 neofetch-git
-vlc
-elisa
-gwenview
-okular
 android-file-transfer
 gvfs-mtp
 broadcom-wl-dkms
 gparted
-spectacle
 vulkan-radeon
 ark
 unzip
