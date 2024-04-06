@@ -112,6 +112,7 @@ sdparm
 sg3_utils
 smartmontools
 sof-firmware
+noto-fonts-cjk
 squashfs-tools
 sudo
 syslinux
