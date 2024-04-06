@@ -2,6 +2,7 @@ alsa-utils
 amd-ucode
 arch-install-scripts
 bluez
+ttf-apple-emoji
 bluez-utils
 pipewire
 pipewire-pulse
