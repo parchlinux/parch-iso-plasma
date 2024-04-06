@@ -168,6 +168,11 @@ kalk
 vlc
 spectacle
 kamoso
+kweather
+merkuro
+kdeconnect
+marknote
+partitionmanager
 
 #systemutils
 btop
@@ -183,7 +188,6 @@ neofetch-git
 android-file-transfer
 gvfs-mtp
 broadcom-wl-dkms
-gparted
 vulkan-radeon
 ark
 unzip
@@ -206,3 +210,4 @@ parch-plymouth
 plymouth
 boost
 aptpac
+power-profiles-daemon
