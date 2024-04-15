@@ -26,7 +26,7 @@ currently Parch actively develops and maitains 2 desktops, Gnome and Parch.
 
 | Gnome | Plasma |
 |-----|------|
-| Less features, more stable | More features, less stable|
+| Less features | More features|
 | Less customization, but simpler | More customization, but steeper learning curve|
 | Better GTK support | Better QT support|
 | More support online and bigger comunity| Developers Choice, more direct support|
@@ -65,7 +65,7 @@ To get more resources pleas refer to [Arch Wiki](https://wiki.archlinux.org/) an
 
 | گنوم | پلاسما |
 |-----|------|
-| امکانات کمتر ولی پایداری بیشتر | پایداری کمتر ولی امکانات بیشتر|
+| امکانات کمتر | امکانات بیشتر|
 | شخصی سازی کمتر ولی کار راحت تر | امکانات شخصی سازی بیشتر اما با احتمال سردرگمی بیشتر|
 | پیشتبانی بهتر از نرم افزار های gtk | پشتیبانی بهتر از نرم افزار های qt
 | پشتیبانی آنلاین و جامعه بزرگتر| انتخاب سازندگان و پشتیبانی مستقیم بیشتر
