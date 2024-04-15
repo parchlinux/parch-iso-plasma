@@ -21,9 +21,22 @@ KDE Plasma is a feature-rich and highly customizable desktop environment that of
 | Firefox | Fast, Private & Safe Web Browser | Web Browser |
 | MarkNote | Take notes in Markdown | Productivity |
 
+## Which to choose
+currently Parch actively develops and maitains 2 desktops, Gnome and Parch.
 
-
+| Gnome | Plasma |
+|-----|------|
+| Less features, more stable | More features, less stable|
+| Less customization, but simpler | More customization, but steeper learning curve|
+| Better GTK support | Better QT support|
+| More support online and bigger comunity| Developers Choice, more direct support|
 ‌
+## Support
+
+To get support, ask question and report bugs, you can use [Parch's telegram group](https://t.me/parchlinux_en) or [github](https://github.com/parchlinux/parch-iso-plasma/issues).
+
+To get more resources pleas refer to [Arch Wiki](https://wiki.archlinux.org/) and [Parch forums](https://forum.parchlinux.com/).
+
 # Fa
 
 <div dir="rtl">
@@ -45,5 +58,21 @@ KDE Plasma is a feature-rich and highly customizable desktop environment that of
 | Elisa | یک پخش کننده موسیقی ساده و آسان برای استفاده که در CPP و Kirigami نوشته شده است. | فیلم و موسیقی |
 | FireFox | مرورگر وب سریع، خصوصی و ایمن | مرورگر وب |
 | MarkNote | یادداشت برداری در Markdown | بهره وری |
+
+## انتخاب
+در حال حاضر پارچ به صورت فعال از ۲ میزکار پشتیبانی می کند، پلاسما و گنوم. 
+### مزایا و معایب
+
+| گنوم | پلاسما |
+|-----|------|
+| امکانات کمتر ولی پایداری بیشتر | پایداری کمتر ولی امکانات بیشتر|
+| شخصی سازی کمتر ولی کار راحت تر | امکانات شخصی سازی بیشتر اما با احتمال سردرگمی بیشتر|
+| پیشتبانی بهتر از نرم افزار های gtk | پشتیبانی بهتر از نرم افزار های qt
+| پشتیبانی آنلاین و جامعه بزرگتر| انتخاب سازندگان و پشتیبانی مستقیم بیشتر
+### پشتیبانی
+
+برای دریافت پشتیبانی شما می توانید از [گروه تلگرام پارچ](https://t.me/parchlinux_fa) یا [گیت هاب](https://github.com/parchlinux/parch-iso-plasma/issues) استفاده نمایید.
+
+برای دریافت اطلاعات بیشتر به [ویکی آرچ](https://wiki.archlinux.org/) یا [تالار های گفت و گوی پارچ](https://forum.parchlinux.com/) مراجعه کنید.
 
 </div>
