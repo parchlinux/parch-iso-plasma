@@ -22,8 +22,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
         run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip zip unzip
-      - name: Change Arch docker mirror
-        run: reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
       - name: Build image
         run: mkarchiso -v iso/
       - name: Upload iso to the release
