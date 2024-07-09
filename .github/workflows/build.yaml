@@ -10,8 +10,10 @@ env:
   name: ${{ github.event.repository.name }}
   release_name: ${{ github.ref_name }}
   GH_TOKEN: ${{ github.token }}
+  HOST: mirror.parchlinux.com
 jobs:
-  build:
+  build-beta:
+    if: github.event.release.prerelease == true
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -21,15 +23,54 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
-        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip zip unzip
+        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
       - name: Build image
         run: mkarchiso -v iso/
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST rm -rf /srv/http/test/
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST mkdir /srv/http/test/  
+      - name: rename iso
+        run: mv "$(ls out/*.iso)" out/Parchlinux-test-latest.iso
+      - name: upload iso to host
+        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r "$(ls out/*.iso)" root@mirror.parchlinux.com:/srv/http/test/
       - name: Upload iso to the release
         run: |
           cd ./out
           mkdir iso_parts
           # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
-          zip -s 1000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          #7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          md5sum iso_parts/* > iso_parts/md5sums.txt
+          gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
+  build:
+    if: github.event.release.prerelease == false
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Packages via Pacman
+        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
+      - name: Build image
+        run: mkarchiso -v iso/
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST rm -rf /srv/http/test/
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST mkdir /srv/http/test/  
+      - name: rename iso
+        run: mv "$(ls out/*.iso)" out/Parchlinux-test-latest.iso
+      - name: upload iso to host
+        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r "$(ls out/*.iso)" root@mirror.parchlinux.com:/srv/http/test/
+      - name: Upload iso to the release
+        run: |
+          cd ./out
+          mkdir iso_parts
+          # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
+          #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
+          7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
           md5sum iso_parts/* > iso_parts/md5sums.txt
           gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
