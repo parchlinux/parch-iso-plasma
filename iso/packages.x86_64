@@ -145,9 +145,6 @@ archlinux-keyring
 openssl-1.1
 openssl
 
-#Tasky
-tasky
-
 #Desktop
 sddm
 xorg
@@ -184,7 +181,7 @@ dolphin
 dolphin-plugins
 discover
 xdg-user-dirs
-packagekit-qt5
+packagekit-qt6
 neofetch-git
 android-file-transfer
 gvfs-mtp
@@ -194,6 +191,9 @@ ark
 unzip
 unrar
 vazirmatn-fonts
+parch-plasma-meta
+
+
 
 #parchlinuxstuff
 calamares
@@ -209,6 +209,5 @@ parch-wallpapers
 parch-plymouth
 plymouth
 boost
-aptpac
 power-profiles-daemon
 fastfetch
