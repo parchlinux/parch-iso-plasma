@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
-        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
+        run: pacman -Syu --noconfirm; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
       - name: Change mirrors
         run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
       - name: Build image
@@ -56,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Packages via Pacman
-        run: pacman -Sy; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
+        run: pacman -Syu --noconfirm; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
       - name: Change mirrors
         run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
       - name: Build image
