@@ -1,52 +1,16 @@
-# This workflow will build an Arch Linux ISO file with the commit on it
 name: build parchiso per release
 on:
   release:
     types:
       - created
-
 env:
   api_key: ${{ secrets.GITHUB_TOKEN }}
   name: ${{ github.event.repository.name }}
   release_name: ${{ github.ref_name }}
   GH_TOKEN: ${{ github.token }}
-  HOST: mirror.parchlinux.com
+  VARIANT: plasma
 jobs:
-  build-beta:
-    if: github.event.release.prerelease == true
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
-      options: --privileged
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Packages via Pacman
-        run: pacman -Syu --noconfirm; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
-      - name: Change mirrors
-        run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-      - name: Build image
-        run: mkarchiso -v iso/
-      - name: remove last iso
-        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST rm -rf /srv/http/plasma/
-      - name: remove last iso
-        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST mkdir /srv/http/plasma/
-      - name: rename iso
-        run: mv "$(ls out/*.iso)" out/Parchlinux-Plasma-beta.iso
-      - name: upload iso to host
-        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r "$(ls out/*.iso)" root@mirror.parchlinux.com:/srv/http/plasma/
-      - name: Upload iso to the release
-        run: |
-          cd ./out
-          mkdir iso_parts
-          # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
-          #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          md5sum iso_parts/* > iso_parts/md5sums.txt
-          gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
   build:
-    if: github.event.release.prerelease == false
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -61,20 +25,41 @@ jobs:
         run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
       - name: Build image
         run: mkarchiso -v iso/
-      - name: remove last iso
-        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST rm -rf /srv/http/plasma/
-      - name: remove last iso
-        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no root@$HOST mkdir /srv/http/plasma/
-      - name: rename iso
-        run: mv "$(ls out/*.iso)" out/Parchlinux-Plasma-latest.iso
-      - name: upload iso to host
-        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r "$(ls out/*.iso)" root@mirror.parchlinux.com:/srv/http/plasma/
-      - name: Upload iso to the release
+      - name: Install netbird client
         run: |
-          cd ./out
-          mkdir iso_parts
-          # split -d -b 2000M "$(ls *.iso)" iso_parts/"$(ls *.iso)"_part
-          #zip -s 2000m iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          7z -v1000m a iso_parts/"$(ls *.iso)".zip "$(ls *.iso)"
-          md5sum iso_parts/* > iso_parts/md5sums.txt
-          gh release upload ${{ github.event.release.tag_name }} ./iso_parts/* -R ${{ github.repository }}
+          curl -LO https://github.com/netbirdio/netbird/releases/download/v0.74.1/netbird_0.74.1_linux_amd64.tar.gz
+          tar -xzf netbird_0.74.1_linux_amd64.tar.gz
+          mv netbird /usr/bin/netbird
+          chmod +x /usr/bin/netbird
+      - name: Prepare tun device
+        run: |
+          if [ ! -c /dev/net/tun ]; then
+            mkdir -p -m 755 /dev/net
+            mknod /dev/net/tun c 10 200
+            chmod 0666 /dev/net/tun
+          fi
+      - name: Connect to Netbird
+        run: |
+          netbird service run &
+          sleep 3
+          netbird up \
+            --setup-key "${{ secrets.BIRD }}" \
+            --management-url https://netbird.parchlinux.ir:443
+          netbird status
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no parch@${{ secrets.NETIP }} rm -rf /srv/http/${VARIANT}/
+      - name: remove last iso
+        run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no parch@${{ secrets.NETIP }} mkdir /srv/http/${VARIANT}/
+      - name: rename iso
+        run: mv "$(ls out/*.iso)" out/Parchlinux-${VARIANT}-latest.iso
+      - name: generate md5
+        run: |
+          ISO_FILE="out/Parchlinux-${VARIANT}-latest.iso"
+          md5sum "$ISO_FILE" > out/md5sum.txt
+      - name: upload iso to host
+        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r out/Parchlinux-${VARIANT}-latest.iso parch@${{ secrets.NETIP }}:/srv/http/${VARIANT}/
+      - name: upload md5 to host
+        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r out/md5sum.txt parch@${{ secrets.NETIP }}:/srv/http/${VARIANT}/
+      - name: Disconnect from Netbird
+        if: always()
+        run: netbird down
