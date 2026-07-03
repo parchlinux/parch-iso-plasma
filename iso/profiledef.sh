@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="Parchlinux Plasma"
+iso_name="Parchlinux-Plasma"
 iso_label="PARCHLINUX_PLASMA_$(date +%Y%m)"
 iso_publisher="Parch Linux <parchlinux.com>"
 iso_application="Parch Linux Live/Rescue CD"
