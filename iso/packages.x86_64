@@ -138,7 +138,6 @@ openssl-1.1
 openssl
 
 #Desktop
-sddm
 xorg
 bash-completion
 networkmanager
@@ -172,6 +171,14 @@ kwallet-pam
 kwayland
 kwin
 kwrited
+ffmpegthumbs
+kdenetwork-filesharing
+kdegraphics-thumbnailers
+kimageformats
+kio-admin
+kio-extras
+kio-fuse
+libappindicator
 layer-shell-qt
 libkscreen
 libksysguard
@@ -195,15 +202,18 @@ plasma-vault
 plasma-workspace
 plasma-workspace-wallpapers
 plasma5support
+plasma-keyboard
+plasma-login-manager
+plasma-x11-session
 plymouth-kcm
 polkit-kde-agent
 powerdevil
 print-manager
 qqc2-breeze-style
-sddm-kcm
 systemsettings
 wacomtablet
 xdg-desktop-portal-kde
+xsettingsd
 kunifiedpush
 dolphin
 ark
