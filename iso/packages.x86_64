@@ -35,7 +35,8 @@ ethtool
 exfatprogs
 f2fs-tools
 fatresize
-zen-browser
+firefox
+firefox-pwa
 fsarchiver
 git
 gpart
@@ -134,7 +135,6 @@ xorg-twm
 xorg-xinit
 zsh
 archlinux-keyring
-openssl-1.1
 openssl
 
 #Desktop
@@ -144,6 +144,8 @@ networkmanager
 parch-grub
 parch-dorood
 dastore
+shelly
+parch-base-config
 
 # Plasma Packages
 # Minnimal Plasma Desktop for start
