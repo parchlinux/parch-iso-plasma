@@ -142,7 +142,7 @@ xorg
 bash-completion
 networkmanager
 parch-grub
-parch-dorood
+parch-welcome
 dastore
 shelly
 parch-base-config
@@ -150,6 +150,7 @@ pdm
 parch-kernel-manager
 parch-iso-writer
 parchdroid
+pacman-contrib
 
 # Plasma Packages
 # Minnimal Plasma Desktop for start
