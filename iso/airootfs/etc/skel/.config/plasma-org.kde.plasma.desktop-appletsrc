@@ -19,11 +19,12 @@ wallpaperplugin=org.kde.image
 DialogHeight=540
 DialogWidth=720
 
-
 [Containments][1][Wallpaper][org.kde.image][General]
-Image=/usr/share/wallpapers/Parch-wallpaper/Parch-wallpaper-6-Light.jpg
-PreviewImage=/usr/share/wallpapers/Parch-wallpaper/Parch-wallpaper-6-Light.jpg
+Image=/usr/share/wallpapers/Sketchy-background/Sketchy_TakhteJamshid_Dark.png
+PreviewImage=/usr/share/wallpapers/Sketchy-background/Sketchy_TakhteJamshid_Dark.png
 SlidePaths=/usr/share/wallpapers/
+
+
 
 [Containments][2]
 activityId=
