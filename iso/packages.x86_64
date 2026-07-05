@@ -146,6 +146,10 @@ parch-dorood
 dastore
 shelly
 parch-base-config
+pdm
+parch-kernel-manager
+parch-iso-writer
+parchdroid
 
 # Plasma Packages
 # Minnimal Plasma Desktop for start
