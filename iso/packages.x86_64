@@ -119,6 +119,7 @@ udftools
 usb_modeswitch
 usbmuxd
 usbutils
+pciutils
 vim
 virtualbox-guest-utils-nox
 vpnc
