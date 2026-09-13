@@ -1,0 +1,16 @@
+[Unit]
+Description=Parch Linux Hardware Detection and Graphics Setup
+DefaultDependencies=no
+After=systemd-udev-settle.service systemd-modules-load.service
+Before=display-manager.service graphical.target
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/parch-hardware-detect
+RemainAfterExit=yes
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

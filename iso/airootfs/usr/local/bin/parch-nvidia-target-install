@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+#
+# parch-nvidia-target-install: Configures NVIDIA drivers on the target installed system
+# Designed to be invoked by Calamares or manually after installation.
+#
+
+set -euo pipefail
+
+TARGET="${1:-/target}"
+
+LOG_FILE="/var/log/parch-nvidia-target-install.log"
+exec > >(tee -a "${LOG_FILE}") 2>&1
+
+echo "==> [Parch NVIDIA Target Install] Target mount: ${TARGET}"
+
+# Check if proprietary NVIDIA mode was active or forced
+if [[ ! -f /run/parch-driver-nonfree && "${2:-}" != "--force" ]]; then
+    echo "==> [Parch NVIDIA Target Install] Open-source drivers selected. Skipping target NVIDIA configuration."
+    exit 0
+fi
+
+if [[ ! -d "${TARGET}" || ! -f "${TARGET}/bin/bash" ]]; then
+    echo "==> [Parch NVIDIA Target Install] Target filesystem not found at ${TARGET}!"
+    exit 1
+fi
+
+echo "==> [Parch NVIDIA Target Install] Applying NVIDIA configuration to target system..."
+
+# 1. Ensure modprobe configurations on target
+echo "==> [Parch NVIDIA Target Install] Writing modprobe blacklist and options..."
+cat << 'EOF' > "${TARGET}/etc/modprobe.d/nouveau.conf"
+blacklist nouveau
+install nouveau /bin/true
+options nouveau modeset=0
+EOF
+
+cat << 'EOF' > "${TARGET}/etc/modprobe.d/nvidia.conf"
+options nvidia_drm modeset=1 fbdev=1
+options nvidia NVreg_DynamicPowerManagement=0x02
+options nvidia NVreg_PreserveVideoMemoryAllocations=1
+options nvidia NVreg_TemporaryFilePath=/var/tmp
+EOF
+
+# 2. Add NVIDIA modules to mkinitcpio.conf on target
+if [[ -f "${TARGET}/etc/mkinitcpio.conf" ]]; then
+    echo "==> [Parch NVIDIA Target Install] Updating mkinitcpio.conf modules..."
+    if grep -q "MODULES=.*nvidia" "${TARGET}/etc/mkinitcpio.conf"; then
+        echo "==> NVIDIA modules already present in mkinitcpio.conf"
+    else
+        sed -i -E 's/^MODULES=\((.*)\)/MODULES=(\1 nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' "${TARGET}/etc/mkinitcpio.conf"
+        sed -i -E 's/MODULES=\([[:space:]]+/MODULES=(/' "${TARGET}/etc/mkinitcpio.conf"
+    fi
+
+    # Rebuild initramfs on target
+    if command -v arch-chroot >/dev/null 2>&1; then
+        echo "==> [Parch NVIDIA Target Install] Regenerating target initramfs..."
+        arch-chroot "${TARGET}" mkinitcpio -P || true
+    elif [[ -x "${TARGET}/usr/bin/mkinitcpio" ]]; then
+        chroot "${TARGET}" mkinitcpio -P || true
+    fi
+fi
+
+# 3. Add nvidia_drm.modeset=1 to GRUB default config on target
+if [[ -f "${TARGET}/etc/default/grub" ]]; then
+    echo "==> [Parch NVIDIA Target Install] Updating target GRUB configuration..."
+    if ! grep -q "nvidia_drm.modeset=1" "${TARGET}/etc/default/grub"; then
+        sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)/\1 nvidia_drm.modeset=1/' "${TARGET}/etc/default/grub"
+        if command -v arch-chroot >/dev/null 2>&1 && [[ -d "${TARGET}/boot/grub" ]]; then
+            arch-chroot "${TARGET}" grub-mkconfig -o /boot/grub/grub.cfg || true
+        fi
+    fi
+fi
+
+# 4. Enable NVIDIA systemd power management units on target
+for svc in nvidia-persistenced.service nvidia-suspend.service nvidia-hibernate.service nvidia-resume.service; do
+    if [[ -f "${TARGET}/usr/lib/systemd/system/${svc}" ]]; then
+        echo "==> [Parch NVIDIA Target Install] Enabling ${svc} on target..."
+        if command -v arch-chroot >/dev/null 2>&1; then
+            arch-chroot "${TARGET}" systemctl enable "${svc}" || true
+        elif [[ -d "${TARGET}/etc/systemd/system/multi-user.target.wants" ]]; then
+            ln -sf "/usr/lib/systemd/system/${svc}" "${TARGET}/etc/systemd/system/multi-user.target.wants/${svc}" || true
+        fi
+    fi
+done
+
+# 5. Export Wayland / EGL environment variables on target
+mkdir -p "${TARGET}/etc/environment.d"
+cat << 'EOF' > "${TARGET}/etc/environment.d/10-nvidia.conf"
+LIBVA_DRIVER_NAME=nvidia
+GBM_BACKEND=nvidia-drm
+__GLX_VENDOR_LIBRARY_NAME=nvidia
+NVD_BACKEND=direct
+EOF
+
+echo "==> [Parch NVIDIA Target Install] NVIDIA target configuration finished successfully."
+exit 0

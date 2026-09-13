@@ -280,3 +280,11 @@ plymouth
 boost
 power-profiles-daemon
 fastfetch
+
+#nvidia
+nvidia
+nvidia-utils
+nvidia-settings
+nvidia-prime
+egl-wayland
+opencl-nvidia

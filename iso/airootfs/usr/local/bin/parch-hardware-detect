@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+#
+# parch-hardware-detect: Early boot graphics hardware detection and configuration
+# Configures open-source vs proprietary NVIDIA drivers based on boot parameters
+# and detected PCI hardware before display-manager starts.
+#
+
+set -u
+
+LOG_FILE="/var/log/parch-hardware-detect.log"
+exec > >(tee -a "${LOG_FILE}") 2>&1
+
+echo "==> [Parch Hardware Detect] Starting graphics driver configuration..."
+
+# 1. Inspect kernel command line
+CMDLINE="$(cat /proc/cmdline 2>/dev/null || echo '')"
+REQUESTED_DRIVER="auto"
+
+for param in ${CMDLINE}; do
+    case "${param}" in
+        driver=nonfree|driver=nvidia)
+            REQUESTED_DRIVER="nonfree"
+            ;;
+        driver=free|driver=opensource)
+            REQUESTED_DRIVER="free"
+            ;;
+        nomodeset)
+            echo "==> [Parch Hardware Detect] nomodeset detected in kernel cmdline"
+            ;;
+    esac
+done
+
+echo "==> [Parch Hardware Detect] Requested driver mode: ${REQUESTED_DRIVER}"
+
+# 2. Check for NVIDIA PCI hardware (Class 0300 VGA, 0302 3D, 0380 Display controller, Vendor 10de)
+NVIDIA_DEVICES=""
+if command -v lspci >/dev/null 2>&1; then
+    NVIDIA_DEVICES="$(lspci -d 10de: -nn 2>/dev/null | grep -E '\[030[028]\]' || true)"
+fi
+
+if [[ -n "${NVIDIA_DEVICES}" ]]; then
+    echo "==> [Parch Hardware Detect] Detected NVIDIA GPU(s):"
+    echo "${NVIDIA_DEVICES}"
+    HAS_NVIDIA=1
+else
+    echo "==> [Parch Hardware Detect] No NVIDIA GPU detected."
+    HAS_NVIDIA=0
+fi
+
+# Determine if we should activate proprietary NVIDIA driver
+USE_NVIDIA=0
+if [[ "${HAS_NVIDIA}" -eq 1 ]]; then
+    if [[ "${REQUESTED_DRIVER}" == "nonfree" ]]; then
+        USE_NVIDIA=1
+    elif [[ "${REQUESTED_DRIVER}" == "auto" ]] && modinfo nvidia >/dev/null 2>&1; then
+        USE_NVIDIA=1
+    fi
+fi
+
+# 3. Configure drivers
+if [[ "${USE_NVIDIA}" -eq 1 ]]; then
+    echo "==> [Parch Hardware Detect] Configuring proprietary NVIDIA driver..."
+
+    # Blacklist nouveau
+    cat << 'EOF' > /etc/modprobe.d/nouveau.conf
+blacklist nouveau
+install nouveau /bin/true
+options nouveau modeset=0
+EOF
+
+    # Configure NVIDIA DRM modeset & power management
+    cat << 'EOF' > /etc/modprobe.d/nvidia.conf
+options nvidia_drm modeset=1 fbdev=1
+options nvidia NVreg_DynamicPowerManagement=0x02
+options nvidia NVreg_PreserveVideoMemoryAllocations=1
+options nvidia NVreg_TemporaryFilePath=/var/tmp
+EOF
+
+    # Remove nouveau if currently loaded
+    if lsmod | grep -q '^nouveau'; then
+        echo "==> [Parch Hardware Detect] Unloading nouveau module..."
+        rmmod nouveau 2>/dev/null || true
+    fi
+
+    # Load proprietary nvidia modules
+    echo "==> [Parch Hardware Detect] Loading NVIDIA kernel modules..."
+    modprobe nvidia 2>/dev/null || true
+    modprobe nvidia_modeset 2>/dev/null || true
+    modprobe nvidia_uvm 2>/dev/null || true
+    modprobe nvidia_drm 2>/dev/null || true
+
+    # Export Wayland / EGL / Vaapi environment variables for NVIDIA
+    mkdir -p /etc/environment.d
+    cat << 'EOF' > /etc/environment.d/10-nvidia.conf
+LIBVA_DRIVER_NAME=nvidia
+GBM_BACKEND=nvidia-drm
+__GLX_VENDOR_LIBRARY_NAME=nvidia
+NVD_BACKEND=direct
+EOF
+
+    # Flag for Calamares installer
+    mkdir -p /run/parch
+    cat << EOF > /run/parch/driver-state
+DRIVER=nonfree
+VENDOR=nvidia
+DEVICES="${NVIDIA_DEVICES}"
+EOF
+    touch /run/parch-driver-nonfree
+
+    # If running on installed system (not live ISO) and not yet configured:
+    if [[ ! -d /run/archiso && ! -f /etc/parch-nvidia-configured && -x /usr/local/bin/parch-nvidia-target-install ]]; then
+        echo "==> [Parch Hardware Detect] First boot on installed system detected. Running target setup..."
+        /usr/local/bin/parch-nvidia-target-install / --force || true
+        touch /etc/parch-nvidia-configured
+    fi
+
+    echo "==> [Parch Hardware Detect] Proprietary NVIDIA driver setup complete."
+
+else
+    echo "==> [Parch Hardware Detect] Configuring open-source driver stack..."
+
+    # If user explicitly requested free drivers on NVIDIA hardware, blacklist nvidia modules
+    if [[ "${HAS_NVIDIA}" -eq 1 && "${REQUESTED_DRIVER}" == "free" ]]; then
+        cat << 'EOF' > /etc/modprobe.d/nvidia-blacklist.conf
+blacklist nvidia
+blacklist nvidia_modeset
+blacklist nvidia_uvm
+blacklist nvidia_drm
+EOF
+        rm -f /etc/modprobe.d/nouveau.conf
+        modprobe nouveau 2>/dev/null || true
+    fi
+
+    # Flag for Calamares installer
+    mkdir -p /run/parch
+    cat << EOF > /run/parch/driver-state
+DRIVER=free
+VENDOR=opensource
+EOF
+    touch /run/parch-driver-free
+
+    echo "==> [Parch Hardware Detect] Open-source driver setup complete."
+fi
+
+exit 0
