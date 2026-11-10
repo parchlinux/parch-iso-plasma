@@ -1,0 +1,113 @@
+# Verification pipeline for the Parch Linux Plasma ISO profile.
+#
+# The release workflow (.github/workflows/build.yaml) only runs ISO builds
+# when a GitHub release is published. Without this pipeline, merged changes
+# are only validated weeks later, after rolling-release Arch packages have
+# already moved on.
+#
+# This workflow is fully self-contained: it does not use repository secrets
+# and works unchanged on PRs from forks.
+name: verify ISO profile
+
+on:
+  pull_request:
+    # Do not rebuild the ISO for documentation-only changes.
+    paths-ignore:
+      - '**.md'
+      - 'image/**'
+      - 'LICENSE'
+      - '.gitignore'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'image/**'
+      - 'LICENSE'
+      - '.gitignore'
+  # Weekly build keeps the profile from rotting between releases.
+  schedule:
+    - cron: '0 3 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint scripts and YAML
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install lint tools
+        run: pacman -Syu --noconfirm --needed shellcheck git python-yaml
+      - name: Bash syntax check
+        run: |
+          set -euo pipefail
+          failed=0
+          for sh in $(git ls-files '*.sh'); do
+            if bash -n "$sh"; then
+              echo "OK: $sh"
+            else
+              echo "FAIL: $sh" >&2
+              failed=1
+            fi
+          done
+          exit "$failed"
+      - name: Shellcheck
+        run: |
+          set -euo pipefail
+          # Files kept identical to upstream archiso (livecd-sound) are skipped on purpose.
+          shellcheck build.sh \
+            iso/airootfs/root/.automated_script.sh \
+            iso/airootfs/usr/local/bin/choose-mirror
+      - name: YAML validation
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import yaml
+
+          for f in (
+              ".github/workflows/build.yaml",
+              ".github/workflows/verify.yaml",
+              ".pre-commit-config.yaml",
+          ):
+              with open(f, encoding="utf-8") as fh:
+                  yaml.safe_load(fh)
+              print("YAML OK:", f)
+          PY
+
+  build:
+    name: Build ISO (verification)
+    needs: lint
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: pacman -Syu --noconfirm --needed git archiso p7zip reflector rsync
+      - name: Update pacman mirrors
+        run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+      - name: Build ISO
+        run: mkarchiso -v iso/
+      - name: Collect checksums
+        run: |
+          cd out
+          sha256sum ./*.iso > sha256sum.txt
+          cat sha256sum.txt
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Parchlinux-plasma-ISO-${{ github.run_id }}
+          path: |
+            out/*.iso
+            out/sha256sum.txt
+          retention-days: 14
+          if-no-files-found: error
