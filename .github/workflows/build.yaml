@@ -1,14 +1,13 @@
 name: build parchiso per release
+
 on:
   release:
     types:
       - created
+
 env:
-  api_key: ${{ secrets.GITHUB_TOKEN }}
-  name: ${{ github.event.repository.name }}
-  release_name: ${{ github.ref_name }}
-  GH_TOKEN: ${{ github.token }}
   VARIANT: plasma
+
 jobs:
   build:
     permissions:
@@ -18,10 +17,10 @@ jobs:
       image: archlinux:latest
       options: --privileged
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Packages via Pacman
-        run: pacman -Syu --noconfirm; pacman --noconfirm -S git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
-      - name: Change mirrors
+      - uses: actions/checkout@v4
+      - name: Install packages via pacman
+        run: pacman -Syu --noconfirm --needed git archiso python python-pygithub github-cli reflector p7zip openssh sshpass rsync wget
+      - name: Update pacman mirrors
         run: reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
       - name: Build image
         run: mkarchiso -v iso/
@@ -46,20 +45,27 @@ jobs:
             --setup-key "${{ secrets.BIRD }}" \
             --management-url https://netbird.parchlinux.ir:443
           netbird status
-      - name: remove last iso
+      - name: Clear remote directory
         run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no parch@${{ secrets.NETIP }} rm -rf /srv/http/${VARIANT}/
-      - name: remove last iso
+      - name: Create remote directory
         run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -o StrictHostKeyChecking=no parch@${{ secrets.NETIP }} mkdir /srv/http/${VARIANT}/
-      - name: rename iso
-        run: mv "$(ls out/*.iso)" out/Parchlinux-${VARIANT}-latest.iso
-      - name: generate md5
+      - name: Rename ISO
+        run: |
+          iso_file=$(find out -maxdepth 1 -type f -name '*.iso' -print -quit)
+          if [ -z "$iso_file" ]; then
+            echo "error: no *.iso file found in out/" >&2
+            exit 1
+          fi
+          mv "$iso_file" out/Parchlinux-${VARIANT}-latest.iso
+      - name: Generate checksums
         run: |
           ISO_FILE="out/Parchlinux-${VARIANT}-latest.iso"
+          sha256sum "$ISO_FILE" > out/sha256sum.txt
           md5sum "$ISO_FILE" > out/md5sum.txt
-      - name: upload iso to host
+      - name: Upload ISO to host
         run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r out/Parchlinux-${VARIANT}-latest.iso parch@${{ secrets.NETIP }}:/srv/http/${VARIANT}/
-      - name: upload md5 to host
-        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r out/md5sum.txt parch@${{ secrets.NETIP }}:/srv/http/${VARIANT}/
+      - name: Upload checksums to host
+        run: sshpass -p "${{ secrets.SSH_PASS }}" rsync -r out/sha256sum.txt out/md5sum.txt parch@${{ secrets.NETIP }}:/srv/http/${VARIANT}/
       - name: Disconnect from Netbird
         if: always()
         run: netbird down
