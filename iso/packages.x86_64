@@ -245,20 +245,14 @@ haruna
 
 #systemutils
 btop
-konsole
 mirrorman
 kate
-dolphin
 dolphin-plugins
 xdg-user-dirs
 neofetch-git
 android-file-transfer
 gvfs-mtp
-broadcom-wl-dkms
 vulkan-radeon
-ark
-unzip
-unrar
 ttf-vazirmatn
 ttf-vazircode
 gparted
@@ -269,7 +263,6 @@ calamares-parch
 os-prober
 paru
 parch-branding
-parch-grub
 parch-printer
 parch-bluetooth
 parch-pacman-next
