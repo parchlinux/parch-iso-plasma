@@ -3,6 +3,20 @@
 
 ## EN
 
+### How to build
+
+The ISO profile is an [archiso](https://gitlab.archlinux.org/archlinux/archiso) profile:
+
+1. Run on an Arch-based host with root privileges:
+
+   ```bash
+   ./build.sh
+   ```
+
+2. Artifacts land in `out/`.
+
+CI builds the ISO automatically for every GitHub release (`.github/workflows/build.yaml`).
+
 ### What is Plasma Desktop?
 
 KDE Plasma is a feature-rich and highly customizable desktop environment that offers a modern and intuitive user experience. It is known for its flexibility, extensive customization options, and a wide range of applications and tools.
